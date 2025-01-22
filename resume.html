@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Resume Builder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3, h4 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .resume-output {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            margin-top: 20px;
+        }
+        .contact-info {
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .download-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .download-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="formContainer">
+        <h1>Enhanced Resume Builder</h1>
+        <form id="resumeForm">
+            <h2>Personal Information</h2>
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" required>
+
+            <h2>Education</h2>
+            <label for="education">Education:</label>
+            <textarea id="education" required></textarea>
+
+            <h2>Experience</h2>
+            <label for="experience">Experience:</label>
+            <textarea id="experience" required></textarea>
+
+            <h2>Skills</h2>
+            <label for="skills">Skills (comma separated):</label>
+            <input type="text" id="skills">
+
+            <h2>Projects</h2>
+            <label for="projects">Projects:</label>
+            <textarea id="projects"></textarea>
+
+            <button type="submit">Generate Resume</button>
+        </form>
+    </div>
+
+    <div class="container resume-output" id="resumeContainer">
+        <h1>Your Resume</h1>
+        <div id="resumeContent"></div>
+        <button class="download-btn" id="downloadBtn">Download Resume</button>
+    </div>
+
+    <script>
+        document.getElementById('resumeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const resumeData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                education: document.getElementById('education').value,
+                experience: document.getElementById('experience').value,
+                skills: document.getElementById('skills').value,
+                projects: document.getElementById('projects').value,
+            };
+
+            // Hide form and display resume
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('resumeContainer').style.display = 'block';
+
+            const resumeContent = `
+                <div class="contact-info">
+                    <h3>${resumeData.name}</h3>
+                    <p>Email: ${resumeData.email}</p>
+                    <p>Phone: ${resumeData.phone}</p>
+                </div>
+                <div class="section">
+                    <h4>Education</h4>
+                    <p>${resumeData.education}</p>
+                </div>
+                <div class="section">
+                    <h4>Experience</h4>
+                    <p>${resumeData.experience}</p>
+                </div>
+                <div class="section">
+                    <h4>Skills</h4>
+                    <p>${resumeData.skills}</p>
+                </div>
+                <div class="section">
+                    <h4>Projects</h4>
+                    <p>${resumeData.projects}</p>
+                </div>
+            `;
+
+            document.getElementById('resumeContent').innerHTML = resumeContent;
+        });
+
+        // Download functionality
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            const resumeContent = document.getElementById('resumeContent').innerHTML;
+
+            pdf.html(resumeContent, {
+                callback: function (doc) {
+                    doc.save('resume.pdf');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
